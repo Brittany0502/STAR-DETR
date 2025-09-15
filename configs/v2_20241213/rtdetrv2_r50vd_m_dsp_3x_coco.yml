@@ -1,0 +1,49 @@
+__include__: [
+  '../dataset/coco_detection_cityscape_cityscapefoggy.yml',
+  '../runtime.yml',
+  './include/dataloader.yml',
+  './include/optimizer.yml',
+  './include/rtdetrv2_r50vd.yml',
+]
+
+output_dir: ./output/cityscape_cityscapefoggy_TTA
+#output_dir: ./output/pascal_comic_TTA_test
+#tuning: /data/caixinyi/TTA/rtdetrv2_pytorch_原版/output/xView_DOTA_3c_source_only_batch16_不冻结BN_增广_20250121/last.pth
+tuning: /data/caixinyi/TTA/rtdetrv2_pytorch_原版/output/cityscape_cityscapefoggy_640_8c_source_only/last.pth
+
+
+
+HybridEncoder:
+  expansion: 0.5
+
+
+RTDETRTransformerv2:
+  eval_idx: 2 # use 3th decoder layer to eval
+  cross_attn_method: discrete
+
+
+
+epoches: 36
+
+optimizer:
+  type: AdamW
+  params: 
+    - 
+      params: '^(?=.*backbone)(?!.*norm).*$'
+      lr: 0.00001
+    - 
+      params: '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn)).*$'
+      weight_decay: 0.
+
+  lr: 0.0001
+  betas: [0.9, 0.999]
+  weight_decay: 0.0001
+
+
+train_dataloader: 
+  dataset: 
+    transforms:
+      policy:
+        epoch: 33
+  collate_fn:
+    stop_epoch: 33

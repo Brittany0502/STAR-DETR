@@ -1,0 +1,49 @@
+task: detection
+
+evaluator:
+  type: CocoEvaluator
+  iou_types: ['bbox', ]
+
+# num_classes: 365
+# remap_mscoco_category: False
+
+# num_classes: 91
+# remap_mscoco_category: False
+
+num_classes: 9
+#remap_mscoco_category: True
+
+
+train_dataloader: 
+  type: DataLoader
+  dataset: 
+    type: CocoDetection
+    img_folder: /data/caixinyi/Dataset_Nature/cityscapes_all/foggy_cityscapes/crop_img/val
+    ann_file: /data/caixinyi/Dataset_Nature/cityscapes_all/annotations/cityscapes_foggy_val_640_100_start0.json
+    return_masks: False
+    transforms:
+      type: Compose
+      ops: ~
+  shuffle: True
+  num_workers: 4
+  drop_last: True 
+  collate_fn:
+    type: BatchImageCollateFuncion
+
+
+val_dataloader:
+  type: DataLoader
+  dataset: 
+    type: CocoDetection
+    img_folder: /data/caixinyi/Dataset_Nature/cityscapes_all/foggy_cityscapes/crop_img/val
+    ann_file: /data/caixinyi/Dataset_Nature/cityscapes_all/annotations/cityscapes_foggy_val_640_100_start0.json
+
+    return_masks: False
+    transforms:
+      type: Compose
+      ops: ~ 
+  shuffle: False
+  num_workers: 4
+  drop_last: False
+  collate_fn:
+    type: BatchImageCollateFuncion
